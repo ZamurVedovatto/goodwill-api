@@ -68,6 +68,7 @@ const typeDefs = gql `
     likePost(postId: ID!): Post!
 
     createKey(type: String!, plate: String): Key!
+    deleteKey(keyId: ID!): String!
   }
   type Subscription{
     newPost: Post!

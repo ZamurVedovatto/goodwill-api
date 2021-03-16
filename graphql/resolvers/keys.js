@@ -15,7 +15,7 @@ module.exports = {
     },
     async getKey(_, { keyId }) {
       try {
-        const key = await keyModel.findOne(keyId)
+        const key = await KeyModel.findOne( {"_id": keyId })
         if(key) return key
         else throw new Error('Key not found')
       } catch (error) {
@@ -35,10 +35,19 @@ module.exports = {
       if(!valid) {
         throw new UserInputError('Errors', { errors })
       }
+      // make sure user doesn't already exists
+
+      const findKey = await KeyModel.findOne({ plate })
+      if(findKey) {
+        throw new UserInputError('Plate is taken', {
+          errors: {
+            plate: 'This plate is taken'
+          }
+        })
+      }
 
       address = address ? address : { code : "" }
-      plate = plate ? plate : { code: "" }
-
+      plate = plate ? plate : ""
       const newKey = new KeyModel({
         type,
         username,
@@ -48,6 +57,23 @@ module.exports = {
       })
       const key = await newKey.save()
       return key
-    }
+    },
+
+    async deleteKey(_, { keyId }, context) {
+      const user = checkAuth(context)
+      try {
+        console.log(user, keyId)
+        const key = await KeyModel.findOne({ "_id": keyId })
+        console.log(key)
+        if(user.username == key.username) {
+          await key.delete()
+          return 'Key deleted successfully'
+        } else {
+          throw new AuthenticationError('Action not allowed')
+        }
+      } catch(err) {
+        throw new Error(err)
+      }
+    },
   }
 }

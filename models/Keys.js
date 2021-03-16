@@ -12,7 +12,7 @@ const keySchema = new mongoose.Schema({
   },
   active: {
     type: Boolean,
-    default: true
+    default: false
   },
   createdAt: String,
   username: String,
@@ -35,5 +35,5 @@ const keySchema = new mongoose.Schema({
   },
 })
 
-const keyModel = mongoose.model('Key', keySchema)
-module.exports = keyModel
+const KeyModel = mongoose.model('Key', keySchema)
+module.exports = KeyModel
