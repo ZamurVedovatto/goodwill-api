@@ -25,6 +25,7 @@ const typeDefs = gql `
     id: ID!
     email: String!
     token: String!
+    keys: [Key]!
     username: String!
     createdAt: String!
   }
@@ -69,6 +70,7 @@ const typeDefs = gql `
 
     createKey(type: String!, plate: String): Key!
     deleteKey(keyId: ID!): String!
+    getUserKeys(username: String!): [Key]
   }
   type Subscription{
     newPost: Post!

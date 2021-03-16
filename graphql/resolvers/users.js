@@ -4,6 +4,7 @@ const { AuthenticationError, UserInputError } = require('apollo-server')
 const { validateRegisterInput, validateLoginInput } = require('./../../util/validators')
 const { SECRET_KEY } = require('./../../config')
 const User = require('./../../models/User')
+const KeyModel = require('./../../models/Keys')
 const checkAuth = require('./../../util/check-auth')
 
 function generateToken(user) {
@@ -100,10 +101,13 @@ module.exports = {
         errors.general = 'Wrong credentials'
         throw new UserInputError('Wrong credentials', { errors })
       }
+      const keys = await KeyModel.find({ "username": user.username })
+      console.log(keys)
       const token = generateToken(user)
       return {
         ...user._doc,
         id: user._id,
+        keys,
         token
       }
     },

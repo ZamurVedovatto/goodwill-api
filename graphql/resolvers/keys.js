@@ -36,7 +36,6 @@ module.exports = {
         throw new UserInputError('Errors', { errors })
       }
       // make sure user doesn't already exists
-
       const findKey = await KeyModel.findOne({ plate })
       if(findKey) {
         throw new UserInputError('Plate is taken', {
@@ -45,7 +44,6 @@ module.exports = {
           }
         })
       }
-
       address = address ? address : { code : "" }
       plate = plate ? plate : ""
       const newKey = new KeyModel({
@@ -73,6 +71,15 @@ module.exports = {
         }
       } catch(err) {
         throw new Error(err)
+      }
+    },
+
+    async getUserKeys(_, { username }) {
+      try {
+        const keys = await KeyModel.find({ username })
+        return keys
+      } catch (error) {
+        throw new Error(error)
       }
     },
   }
