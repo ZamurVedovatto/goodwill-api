@@ -1,6 +1,26 @@
 const gql = require('graphql-tag')
 
 const typeDefs = gql `
+  input RegisterInput {
+    username: String!
+    password: String!
+    confirmPassword: String!
+    email: String!
+  }
+  input Address {
+    code: String
+    street: String
+    number: String
+    complement: String
+    district: String
+    city: String
+    country: String
+  }
+  input Plate {
+    code: String
+    city: String
+    state: String
+  }
   type User {
     id: ID!
     email: String!
@@ -8,11 +28,15 @@ const typeDefs = gql `
     username: String!
     createdAt: String!
   }
-  input RegisterInput {
-    username: String!
-    password: String!
-    confirmPassword: String!
-    email: String!
+  type Key{
+    id: ID!
+    type: String!
+    confirmed: Boolean
+    active: Boolean
+    createdAt: String
+    username: String
+    address: String
+    plate: String
   }
   type Post {
     id: ID!
@@ -32,6 +56,8 @@ const typeDefs = gql `
     getUser(userId: ID!): User
     getPosts: [Post]
     getPost(postId: ID!): Post
+    getKeys: [Key]
+    getKey(keyId: ID!): Key
   }
   type Mutation {
     register(registerInput: RegisterInput): User!
@@ -40,6 +66,8 @@ const typeDefs = gql `
     createPost(body: String!): Post!
     deletePost(postId: ID!): String!
     likePost(postId: ID!): Post!
+
+    createKey(type: String!, plate: String): Key!
   }
   type Subscription{
     newPost: Post!
