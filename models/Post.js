@@ -2,6 +2,8 @@ const mongoose = require('mongoose')
 
 const postSchema = new mongoose.Schema({
   body: String,
+  type: String,
+  destination: String,
   username: String,
   createdAt: String,
   comments: [

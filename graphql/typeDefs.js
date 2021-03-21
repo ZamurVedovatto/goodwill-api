@@ -32,6 +32,8 @@ const typeDefs = gql `
   type Post {
     id: ID!
     body: String!
+    type: String!
+    destination: String,
     createdAt: String!
     comments: [Comment]!
     username: String!
@@ -62,7 +64,7 @@ const typeDefs = gql `
     register(registerInput: RegisterInput): User!
     login(username: String!, password: String!): User!
     deleteUser(userId: ID!): String!
-    createPost(body: String!): Post!
+    createPost(body: String!, type: String!, destination: String): Post!
     deletePost(postId: ID!): String!
     likePost(postId: ID!): Post!
 
