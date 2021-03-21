@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const { AuthenticationError, UserInputError } = require('apollo-server')
-const { validateRegisterInput, validateLoginInput } = require('./../../util/validators')
+const { validateRegisterInput, validateLoginInput, validateEditInput } = require('./../../util/validators')
 const { SECRET_KEY } = require('./../../config')
 const User = require('./../../models/User')
 const KeyModel = require('./../../models/Keys')
@@ -71,6 +71,7 @@ module.exports = {
       password = await bcrypt.hash(password, 12)
       const newUser = new User({
         username,
+        name: username,
         email,
         password,
         createdAt: new Date().toISOString()
@@ -109,6 +110,36 @@ module.exports = {
         id: user._id,
         keys,
         token
+      }
+    },
+
+    // EDIT USER MUTATION
+    async editUser(_, { username, newName }, context) {
+      console.log(username, newName)
+      const authenticatedUser = checkAuth(context)
+      // validate user data
+      const { valid, errors } = validateEditInput(username, newName)
+      if(!valid) {
+        throw new UserInputError('Errors', { errors })
+      }
+
+      try {
+        if(authenticatedUser.username === username) {
+          const result = await User.findOneAndUpdate(username, {name: newName}, {upsert: true}, function(err, doc) {
+            if(err) {
+              throw new UserInputError(err, {
+                errors: {
+                  err
+                }
+              })
+            }
+          });
+          return result
+        } else {
+          throw new AuthenticationError('Action not allowed')
+        }
+      } catch(err) {
+        throw new Error(err)
       }
     },
 

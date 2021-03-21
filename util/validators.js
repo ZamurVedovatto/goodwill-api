@@ -53,7 +53,18 @@ module.exports.validateKeyInput = (type, key, address) => {
   if (type === 'address' && address.trim() === '') {
     errors.type = 'Address must not be empty'
   }
+  return {
+    errors,
+    valid: Object.keys(errors).length < 1
+  }
+}
 
+module.exports.validateEditInput = (newName) => {
+  console.log(newName)
+  const errors = {}
+  if(newName.trim() === '') {
+    errors.type = 'Name must not be empty'
+  }
   return {
     errors,
     valid: Object.keys(errors).length < 1

@@ -19,6 +19,10 @@ const typeDefs = gql `
     username: String!
     createdAt: String!
   }
+  type UserEdit {
+    username: String!
+    name: String
+  }
   type Key{
     id: ID!
     type: String!
@@ -63,7 +67,9 @@ const typeDefs = gql `
   type Mutation {
     register(registerInput: RegisterInput): User!
     login(username: String!, password: String!): User!
+    editUser(username: String, newName: String): String!
     deleteUser(userId: ID!): String!
+
     createPost(body: String!, type: String!, destination: String): Post!
     deletePost(postId: ID!): String!
     likePost(postId: ID!): Post!

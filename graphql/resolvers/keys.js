@@ -30,9 +30,7 @@ module.exports = {
       key,
       address,
     }, context) {
-      console.log(type,
-        key,
-        address)
+      console.log(type, key, address)
       const { username } = checkAuth(context)
       const { valid, errors } = validateKeyInput(type, key, address)
       if(!valid) {
