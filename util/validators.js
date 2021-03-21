@@ -41,12 +41,13 @@ module.exports.validateLoginInput = (username, password) => {
   }
 }
 
-module.exports.validateKeyInput = (type, address, plate) => {
+module.exports.validateKeyInput = (type, key, address) => {
+  console.log(type, key, address)
   const errors = {}
   if(type.trim() === '') {
     errors.type = 'Type must not be empty'
   }
-  if (type === 'plate' && plate.trim() === '') {
+  if (type === 'plate' && key.trim() === '') {
     errors.type = 'Plate must not be empty'
   } 
   if (type === 'address' && address.trim() === '') {

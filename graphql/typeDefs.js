@@ -9,17 +9,7 @@ const typeDefs = gql `
   }
   input Address {
     code: String
-    street: String
     number: String
-    complement: String
-    district: String
-    city: String
-    country: String
-  }
-  input Plate {
-    code: String
-    city: String
-    state: String
   }
   type User {
     id: ID!
@@ -36,16 +26,24 @@ const typeDefs = gql `
     active: Boolean
     createdAt: String
     username: String
+    key: String!
     address: String
-    plate: String
   }
   type Post {
     id: ID!
     body: String!
     createdAt: String!
+    comments: [Comment]!
     username: String!
     likes: [Like]!
     likeCount: Int!
+    commentCount: Int!
+  }
+  type Comment {
+    id: ID!
+    createdAt: String!
+    username: String!
+    body: String!
   }
   type Like {
     id: ID!
@@ -68,7 +66,10 @@ const typeDefs = gql `
     deletePost(postId: ID!): String!
     likePost(postId: ID!): Post!
 
-    createKey(type: String!, plate: String): Key!
+    createComment(postId: String!, body: String!): Post!
+    deleteComment(postId: ID!, commentId: ID!): Post!
+    
+    createKey(type: String!, key: String, address: String): Key!
     deleteKey(keyId: ID!): String!
     getUserKeys(username: String!): [Key]
   }

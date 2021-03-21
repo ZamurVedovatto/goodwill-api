@@ -27,34 +27,34 @@ module.exports = {
   Mutation: {
     async createKey(_, {
       type,
+      key,
       address,
-      plate
     }, context) {
+      console.log(type,
+        key,
+        address)
       const { username } = checkAuth(context)
-      const { valid, errors } = validateKeyInput(type, address, plate)
+      const { valid, errors } = validateKeyInput(type, key, address)
       if(!valid) {
         throw new UserInputError('Errors', { errors })
       }
       // make sure user doesn't already exists
-      const findKey = await KeyModel.findOne({ plate })
+      const findKey = await KeyModel.findOne({ key })
       if(findKey) {
-        throw new UserInputError('Plate is taken', {
+        throw new UserInputError('Key is taken', {
           errors: {
-            plate: 'This plate is taken'
+            key: 'This key is taken'
           }
         })
       }
-      address = address ? address : { code : "" }
-      plate = plate ? plate : ""
       const newKey = new KeyModel({
         type,
         username,
+        key,
         address,
-        plate,
         createdAt: new Date().toISOString()
       })
-      const key = await newKey.save()
-      return key
+      return await newKey.save()
     },
 
     async deleteKey(_, { keyId }, context) {

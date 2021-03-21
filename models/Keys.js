@@ -16,22 +16,10 @@ const keySchema = new mongoose.Schema({
   },
   createdAt: String,
   username: String,
-  plate: String,
+  key: String,
   address: {
     code: String,
-    street: String,
-    number: String,
-    complement: String,
-    district: String,
-    state: String,
-    city: {
-      type: String,
-      default: 'Belo Horizonte'
-    },
-    country: {
-      type: String,
-      default: 'Brasil'
-    }
+    number: String
   },
 })
 
