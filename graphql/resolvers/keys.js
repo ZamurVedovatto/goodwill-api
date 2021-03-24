@@ -30,8 +30,7 @@ module.exports = {
       key,
       address,
     }, context) {
-      console.log(type, key, address)
-      const { username } = checkAuth(context)
+      const { id: userId } = checkAuth(context)
       const { valid, errors } = validateKeyInput(type, key, address)
       if(!valid) {
         throw new UserInputError('Errors', { errors })
@@ -47,7 +46,7 @@ module.exports = {
       }
       const newKey = new KeyModel({
         type,
-        username,
+        userId,
         key,
         address,
         createdAt: new Date().toISOString()
@@ -58,9 +57,7 @@ module.exports = {
     async deleteKey(_, { keyId }, context) {
       const user = checkAuth(context)
       try {
-        console.log(user, keyId)
         const key = await KeyModel.findOne({ "_id": keyId })
-        console.log(key)
         if(user.username == key.username) {
           await key.delete()
           return 'Key deleted successfully'
@@ -70,15 +67,6 @@ module.exports = {
       } catch(err) {
         throw new Error(err)
       }
-    },
-
-    async getUserKeys(_, { username }) {
-      try {
-        const keys = await KeyModel.find({ username })
-        return keys
-      } catch (error) {
-        throw new Error(error)
-      }
-    },
+    }
   }
 }

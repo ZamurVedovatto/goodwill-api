@@ -1,5 +1,6 @@
 module.exports.validateRegisterInput = (
   username,
+  name,
   email,
   password,
   confirmPassword
@@ -7,6 +8,9 @@ module.exports.validateRegisterInput = (
   const errors = {}
   if (username.trim() === '') {
     errors.username = 'Username must not be empty'
+  }
+  if (name.trim() === '') {
+    errors.name = 'Name must not be empty'
   }
   if (email.trim() === '') {
     errors.email = 'Email must not be empty'
@@ -42,7 +46,6 @@ module.exports.validateLoginInput = (username, password) => {
 }
 
 module.exports.validateKeyInput = (type, key, address) => {
-  console.log(type, key, address)
   const errors = {}
   if(type.trim() === '') {
     errors.type = 'Type must not be empty'
@@ -52,18 +55,6 @@ module.exports.validateKeyInput = (type, key, address) => {
   } 
   if (type === 'address' && address.trim() === '') {
     errors.type = 'Address must not be empty'
-  }
-  return {
-    errors,
-    valid: Object.keys(errors).length < 1
-  }
-}
-
-module.exports.validateEditInput = (newName) => {
-  console.log(newName)
-  const errors = {}
-  if(newName.trim() === '') {
-    errors.type = 'Name must not be empty'
   }
   return {
     errors,

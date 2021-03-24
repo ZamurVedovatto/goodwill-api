@@ -4,24 +4,42 @@ const typeDefs = gql `
   input RegisterInput {
     username: String!
     password: String!
+    name: String!
     confirmPassword: String!
     email: String!
   }
-  input Address {
+  input UserEditInput {
+    id: String
+    email: String
+    username: String
+    name: String
+    createdAt: String
+  }
+  input AddressInput {
+    code: String!
+    number: String!
+    street: String
+    complement: String
+    district: String
+    city: String
+    country: String
+  }
+  type Address {
     code: String
     number: String
+    street: String
+    complement: String
+    district: String
+    city: String
+    country: String
   }
   type User {
     id: ID!
-    email: String!
-    token: String!
-    keys: [Key]!
-    username: String!
-    createdAt: String!
-  }
-  type UserEdit {
-    username: String!
+    email: String
+    token: String
+    username: String
     name: String
+    createdAt: String
   }
   type Key{
     id: ID!
@@ -31,7 +49,7 @@ const typeDefs = gql `
     createdAt: String
     username: String
     key: String!
-    address: String
+    address: Address
   }
   type Post {
     id: ID!
@@ -56,18 +74,19 @@ const typeDefs = gql `
     createdAt: String!
     username: String!
   }
+
   type Query {
-    getUsers: [User]
-    getUser(userId: ID!): User
-    getPosts: [Post]
-    getPost(postId: ID!): Post
-    getKeys: [Key]
-    getKey(keyId: ID!): Key
+    getUsers: [User!]
+    getUser(userId: ID!): User!
+    getPosts: [Post!]
+    getPost(postId: ID!): Post!
+    getKeys: [Key!]
+    getKey(keyId: ID!): Key!
   }
   type Mutation {
     register(registerInput: RegisterInput): User!
     login(username: String!, password: String!): User!
-    editUser(username: String, newName: String): String!
+    editUser(editInput: UserEditInput): User!
     deleteUser(userId: ID!): String!
 
     createPost(body: String!, type: String!, destination: String): Post!
@@ -77,9 +96,8 @@ const typeDefs = gql `
     createComment(postId: String!, body: String!): Post!
     deleteComment(postId: ID!, commentId: ID!): Post!
     
-    createKey(type: String!, key: String, address: String): Key!
+    createKey(type: String!, key: String, address: AddressInput): Key!
     deleteKey(keyId: ID!): String!
-    getUserKeys(username: String!): [Key]
   }
   type Subscription{
     newPost: Post!

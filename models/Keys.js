@@ -4,7 +4,7 @@ const keySchema = new mongoose.Schema({
   type: {
     required: true,
     type: String,
-    default: 'Address'
+    default: 'Plate'
   },
   confirmed: {
     type: Boolean,
@@ -16,11 +16,11 @@ const keySchema = new mongoose.Schema({
   },
   createdAt: String,
   username: String,
-  key: String,
+  value: String,
   address: {
-    code: String,
-    number: String
-  },
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Address'
+  }
 })
 
 const KeyModel = mongoose.model('Key', keySchema)

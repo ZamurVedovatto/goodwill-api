@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const { AuthenticationError, UserInputError } = require('apollo-server')
-const { validateRegisterInput, validateLoginInput, validateEditInput } = require('./../../util/validators')
+const { validateRegisterInput, validateLoginInput } = require('./../../util/validators')
 const { SECRET_KEY } = require('./../../config')
 const User = require('./../../models/User')
 const KeyModel = require('./../../models/Keys')
@@ -12,11 +12,13 @@ function generateToken(user) {
     id: user.id,
     username: user.username,
     email: user.email,
-  }, SECRET_KEY, { expiresIn: '1h' })
+  }, SECRET_KEY, { expiresIn: '4h' })
 }
 
 module.exports = {
   Query: {
+
+    // QUERY GET USERS
     async getUsers () {
       try {
         const users = await User.find().sort({ createdAt: -1 })
@@ -26,6 +28,8 @@ module.exports = {
       }
     },
 
+
+    // QUERY GET USER
     async getUser(_, { userId }) {
       try{
         const user = await User.findById(userId)
@@ -43,9 +47,9 @@ module.exports = {
 
   Mutation: {
     // REGISTER MUTATION
-    async register(_, { registerInput: { username, email, password, confirmPassword }}) {
+    async register(_, { registerInput: { username, email, name, password, confirmPassword }}) {
       // validate user data
-      const { valid, errors } = validateRegisterInput(username, email, password, confirmPassword)
+      const { valid, errors } = validateRegisterInput(username, name, email, password, confirmPassword)
       if(!valid) {
         throw new UserInputError('Errors', { errors })
       }
@@ -66,12 +70,11 @@ module.exports = {
           }
         })
       }
-
       // hash password and create auth token
       password = await bcrypt.hash(password, 12)
       const newUser = new User({
         username,
-        name: username,
+        name,
         email,
         password,
         createdAt: new Date().toISOString()
@@ -85,13 +88,14 @@ module.exports = {
       }
     },
 
+
+
     // LOGIN MUTATION
     async login(_, { username, password }) {
       const { valid, errors } = validateLoginInput(username, password)
       if(!valid) {
         throw new UserInputError('Errors', { errors })
       }
-
       const user = await User.findOne({ username })
       if(!user) {
         errors.general = 'User not found'
@@ -103,7 +107,6 @@ module.exports = {
         throw new UserInputError('Wrong credentials', { errors })
       }
       const keys = await KeyModel.find({ "username": user.username })
-      console.log(keys)
       const token = generateToken(user)
       return {
         ...user._doc,
@@ -113,33 +116,36 @@ module.exports = {
       }
     },
 
-    // EDIT USER MUTATION
-    async editUser(_, { username, newName }, context) {
-      console.log(username, newName)
-      const authenticatedUser = checkAuth(context)
-      // validate user data
-      const { valid, errors } = validateEditInput(username, newName)
-      if(!valid) {
-        throw new UserInputError('Errors', { errors })
-      }
 
-      try {
-        if(authenticatedUser.username === username) {
-          const result = await User.findOneAndUpdate(username, {name: newName}, {upsert: true}, function(err, doc) {
-            if(err) {
-              throw new UserInputError(err, {
-                errors: {
-                  err
-                }
-              })
-            }
-          });
-          return result
-        } else {
-          throw new AuthenticationError('Action not allowed')
+    async editUser(parent, { editInput }, context) {
+      const authenticatedUser = checkAuth(context)
+      const doc = editInput;
+
+      if(authenticatedUser.id === doc.id) {
+        const user = await User.findById(doc.id);
+        if(!user) {
+          throw new Error('User not found')
         }
-      } catch(err) {
-        throw new Error(err)
+
+        // TODO check the best way to modify a document
+        if(!doc.email) {
+          doc.email = user.email;
+        }
+        if(!doc.username) {
+          doc.username = user.username;
+        }
+        if(!doc.name) {
+          doc.name = user.name;
+        }
+        doc.createdAt = user.createdAt;
+
+        const updatedUser = await User.findByIdAndUpdate(doc.id, doc, {
+          new: true
+        });
+
+        return updatedUser;
+      } else {
+        throw new AuthenticationError('Action not allowed')
       }
     },
 
@@ -148,7 +154,7 @@ module.exports = {
       const authenticatedUser = checkAuth(context)
       try {
         const user = await User.findById(userId)
-        if(authenticatedUser.username == user.username) {
+        if(authenticatedUser.id == user.id) {
           await user.delete()
           return 'User deleted successfully'
         } else {

@@ -16,5 +16,5 @@ const addressSchema = new Schema({
   }
 })
 
-const addressModel = model('Address', addressSchema)
-module.exports = addressModel
+const addressModel = model('Address', addressSchema, 'Address')
+module.exports = { addressModel }
