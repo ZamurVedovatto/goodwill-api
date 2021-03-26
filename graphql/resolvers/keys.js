@@ -26,32 +26,44 @@ module.exports = {
 
   Mutation: {
     async createKey(_, {
+      userId,
+      username,
       type,
-      key,
+      value,
       address,
     }, context) {
-      const { id: userId } = checkAuth(context)
-      const { valid, errors } = validateKeyInput(type, key, address)
-      if(!valid) {
-        throw new UserInputError('Errors', { errors })
-      }
-      // make sure user doesn't already exists
-      const findKey = await KeyModel.findOne({ key })
-      if(findKey) {
-        throw new UserInputError('Key is taken', {
-          errors: {
-            key: 'This key is taken'
+      const authenticatedUser = checkAuth(context)
+
+      try {
+        if(authenticatedUser.id == userId) {
+          const { valid, errors } = validateKeyInput(type, value, address)
+          if(!valid) {
+            throw new UserInputError('Errors', { errors })
           }
-        })
+          // make sure user doesn't already exists
+          const findKey = await KeyModel.findOne({ value })
+          if(findKey) {
+            throw new UserInputError('Key is taken', {
+              errors: {
+                key: 'This key is taken'
+              }
+            })
+          }
+          const newKey = new KeyModel({
+            type,
+            userId,
+            username,
+            value,
+            address,
+            createdAt: new Date().toISOString()
+          })
+          return await newKey.save()
+        } else {
+          throw new AuthenticationError('Action not allowed')
+        }
+      } catch(err) {
+        throw new Error(err)
       }
-      const newKey = new KeyModel({
-        type,
-        userId,
-        key,
-        address,
-        createdAt: new Date().toISOString()
-      })
-      return await newKey.save()
     },
 
     async deleteKey(_, { keyId }, context) {

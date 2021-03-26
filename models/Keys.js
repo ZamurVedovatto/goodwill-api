@@ -15,6 +15,10 @@ const keySchema = new mongoose.Schema({
     default: false
   },
   createdAt: String,
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Users'
+  },
   username: String,
   value: String,
   address: {

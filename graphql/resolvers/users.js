@@ -106,13 +106,19 @@ module.exports = {
         errors.general = 'Wrong credentials'
         throw new UserInputError('Wrong credentials', { errors })
       }
+
+      // TODO procurar pelo userId
       const keys = await KeyModel.find({ "username": user.username })
+      console.log(keys)
       const token = generateToken(user)
+
       return {
-        ...user._doc,
-        id: user._id,
+        user: {
+          ...user._doc,
+          id: user._id,
+          token
+        },
         keys,
-        token
       }
     },
 

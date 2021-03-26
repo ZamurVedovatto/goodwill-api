@@ -47,9 +47,14 @@ const typeDefs = gql `
     confirmed: Boolean
     active: Boolean
     createdAt: String
+    userId: ID!
     username: String
-    key: String!
+    value: String!
     address: Address
+  }
+  type LoggedUser {
+    user: User!
+    keys: [Key]
   }
   type Post {
     id: ID!
@@ -85,7 +90,7 @@ const typeDefs = gql `
   }
   type Mutation {
     register(registerInput: RegisterInput): User!
-    login(username: String!, password: String!): User!
+    login(username: String!, password: String!): LoggedUser!
     editUser(editInput: UserEditInput): User!
     deleteUser(userId: ID!): String!
 
@@ -96,7 +101,7 @@ const typeDefs = gql `
     createComment(postId: String!, body: String!): Post!
     deleteComment(postId: ID!, commentId: ID!): Post!
     
-    createKey(type: String!, key: String, address: AddressInput): Key!
+    createKey(userId: ID!, username: String!, type: String!, value: String, address: AddressInput): Key!
     deleteKey(keyId: ID!): String!
   }
   type Subscription{

@@ -45,12 +45,12 @@ module.exports.validateLoginInput = (username, password) => {
   }
 }
 
-module.exports.validateKeyInput = (type, key, address) => {
+module.exports.validateKeyInput = (type, value, address) => {
   const errors = {}
   if(type.trim() === '') {
     errors.type = 'Type must not be empty'
   }
-  if (type === 'plate' && key.trim() === '') {
+  if (type === 'plate' && value.trim() === '') {
     errors.type = 'Plate must not be empty'
   } 
   if (type === 'address' && address.trim() === '') {
