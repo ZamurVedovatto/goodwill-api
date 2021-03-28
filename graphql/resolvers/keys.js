@@ -34,9 +34,10 @@ module.exports = {
       address,
     }, context) {
       const authenticatedUser = checkAuth(context)
-
+      console.log(authenticatedUser.id, userId, (authenticatedUser.id == userId))
       try {
         if(authenticatedUser.id == userId) {
+          console.log('entrou')
           const { valid, errors } = validateKeyInput(type, value, address)
           if(!valid) {
             throw new UserInputError('Errors', { errors })
@@ -67,13 +68,18 @@ module.exports = {
       }
     },
 
-    async deleteKey(_, { keyId }, context) {
-      const user = checkAuth(context)
+    async deleteKey(_, { userId, keyId }, context) {
+      const authenticatedUser = checkAuth(context)
+
       try {
-        const key = await KeyModel.findOne({ "_id": keyId })
-        if(user.username == key.username) {
-          await key.delete()
-          return 'Key deleted successfully'
+        if(authenticatedUser.id == userId) {
+          try {
+            const key = await KeyModel.findOne({ "_id": keyId })
+            await key.delete()
+            return 'Key deleted successfully'
+          } catch(err) {
+            throw new Error(err)
+          }
         } else {
           throw new AuthenticationError('Action not allowed')
         }

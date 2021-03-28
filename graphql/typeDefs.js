@@ -102,7 +102,7 @@ const typeDefs = gql `
     deleteComment(postId: ID!, commentId: ID!): Post!
     
     createKey(userId: ID!, username: String!, type: String!, value: String, address: AddressInput): Key!
-    deleteKey(keyId: ID!): String!
+    deleteKey(userId: ID!, keyId: ID!): String!
   }
   type Subscription{
     newPost: Post!
