@@ -85,7 +85,8 @@ const typeDefs = gql `
     getUser(userId: ID!): User!
     getPosts: [Post!]
     getPost(postId: ID!): Post!
-    getKeys(userId: String!): [Key!]
+    getUserKeys(userId: String!): [Key!]
+    getKeys: [Key!]
     getKey(keyId: ID!): Key!
   }
   type Mutation {

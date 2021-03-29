@@ -2,11 +2,18 @@ const { AuthenticationError, UserInputError } = require('apollo-server')
 const { validateKeyInput } = require('./../../util/validators')
 const checkAuth = require('./../../util/check-auth')
 const KeyModel = require('./../../models/Keys')
-const user = require('../../models/User')
 
 module.exports = {
   Query: {
-    async getKeys(_, { userId }) {
+    async getKeys () {
+      try {
+        const keys = await KeyModel.find().sort({ createdAt: -1 })
+        return keys
+      } catch (err) {
+        throw new Error(err)
+      }
+    },
+    async getUserKeys(_, { userId }) {
       try {
         const keys = await KeyModel.find({ userId })
         return keys
