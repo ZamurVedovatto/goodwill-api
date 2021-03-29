@@ -49,7 +49,7 @@ const typeDefs = gql `
     createdAt: String
     userId: ID!
     username: String
-    value: String!
+    title: String!
     address: Address
   }
   type LoggedUser {
@@ -102,7 +102,7 @@ const typeDefs = gql `
     createComment(postId: String!, body: String!): Post!
     deleteComment(postId: ID!, commentId: ID!): Post!
     
-    createKey(userId: ID!, username: String!, type: String!, value: String, address: AddressInput): Key!
+    createKey(userId: ID!, username: String!, type: String!, title: String, address: AddressInput): Key!
     deleteKey(userId: ID!, keyId: ID!): String!
   }
   type Subscription{

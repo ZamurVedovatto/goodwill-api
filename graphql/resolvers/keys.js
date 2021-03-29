@@ -37,7 +37,7 @@ module.exports = {
       userId,
       username,
       type,
-      value,
+      title,
       address,
     }, context) {
       const authenticatedUser = checkAuth(context)
@@ -45,12 +45,12 @@ module.exports = {
       try {
         if(authenticatedUser.id == userId) {
           console.log('entrou')
-          const { valid, errors } = validateKeyInput(type, value, address)
+          const { valid, errors } = validateKeyInput(type, title, address)
           if(!valid) {
             throw new UserInputError('Errors', { errors })
           }
           // make sure user doesn't already exists
-          const findKey = await KeyModel.findOne({ value })
+          const findKey = await KeyModel.findOne({ title })
           if(findKey) {
             throw new UserInputError('Key is taken', {
               errors: {
@@ -62,7 +62,7 @@ module.exports = {
             type,
             userId,
             username,
-            value,
+            title,
             address,
             createdAt: new Date().toISOString()
           })
