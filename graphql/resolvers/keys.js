@@ -41,10 +41,8 @@ module.exports = {
       address,
     }, context) {
       const authenticatedUser = checkAuth(context)
-      console.log(authenticatedUser.id, userId, (authenticatedUser.id == userId))
       try {
         if(authenticatedUser.id == userId) {
-          console.log('entrou')
           const { valid, errors } = validateKeyInput(type, title, address)
           if(!valid) {
             throw new UserInputError('Errors', { errors })
@@ -77,7 +75,6 @@ module.exports = {
 
     async deleteKey(_, { userId, keyId }, context) {
       const authenticatedUser = checkAuth(context)
-
       try {
         if(authenticatedUser.id == userId) {
           try {
@@ -86,6 +83,30 @@ module.exports = {
             return 'Key deleted successfully'
           } catch(err) {
             throw new Error(err)
+          }
+        } else {
+          throw new AuthenticationError('Action not allowed')
+        }
+      } catch(err) {
+        throw new Error(err)
+      }
+    },
+
+    async toggleActiveKey(_, { userId, keyId }, context) {
+
+      console.log("userId, keyId", userId, keyId)
+
+      const authenticatedUser = checkAuth(context)
+      try {
+        if(authenticatedUser.id == userId) {
+          const selectedKey = await KeyModel.findById(keyId)
+          if(selectedKey) {
+            selectedKey.active = !selectedKey.active
+            console.log("selectedKey.active" , selectedKey.active)
+            await selectedKey.save()
+            return selectedKey
+          } else {
+            throw new UserInputError('Key not found')
           }
         } else {
           throw new AuthenticationError('Action not allowed')

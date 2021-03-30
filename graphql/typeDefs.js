@@ -104,6 +104,7 @@ const typeDefs = gql `
     
     createKey(userId: ID!, username: String!, type: String!, title: String, address: AddressInput): Key!
     deleteKey(userId: ID!, keyId: ID!): String!
+    toggleActiveKey(userId: ID!, keyId: ID!): Key!
   }
   type Subscription{
     newPost: Post!

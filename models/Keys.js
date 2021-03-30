@@ -1,10 +1,18 @@
 const mongoose = require('mongoose')
 
+const types = [
+  "plate",
+  "address",
+  "schoolId",
+  "generic"
+]
+
 const keySchema = new mongoose.Schema({
   type: {
     required: true,
     type: String,
-    default: 'Plate'
+    enum: types,
+    default: 'plate'
   },
   confirmed: {
     type: Boolean,

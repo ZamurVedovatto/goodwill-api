@@ -109,7 +109,6 @@ module.exports = {
 
       // TODO procurar pelo userId
       const keys = await KeyModel.find({ "username": user.username })
-      console.log(keys)
       const token = generateToken(user)
 
       return {
