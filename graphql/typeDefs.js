@@ -56,17 +56,30 @@ const typeDefs = gql `
     user: User!
     keys: [Key]
   }
-  type Post {
+  # type Post {
+  #   id: ID!
+  #   body: String!
+  #   type: String!
+  #   destination: String,
+  #   createdAt: String!
+  #   comments: [Comment]!
+  #   username: String!
+  #   likes: [Like]!
+  #   likeCount: Int!
+  #   commentCount: Int!
+  # }
+  type Message {
     id: ID!
-    body: String!
-    type: String!
-    destination: String,
+    modality: String,
+    senderKey: Key!,
+    targetKey: Key!,
+    body: String!,
+    sender: User!,
     createdAt: String!
     comments: [Comment]!
-    username: String!
+    commentCount: Int!
     likes: [Like]!
     likeCount: Int!
-    commentCount: Int!
   }
   type Comment {
     id: ID!
@@ -83,11 +96,14 @@ const typeDefs = gql `
   type Query {
     getUsers: [User!]
     getUser(userId: ID!): User!
-    getPosts: [Post!]
-    getPost(postId: ID!): Post!
+    # getPosts: [Post!]
+    # getPost(postId: ID!): Post!
     getUserKeys(userId: String!): [Key!]
     getKeys: [Key!]
     getKey(keyId: ID!): Key!
+
+    getMessages: [Message!]
+    getMessage(messageId: ID!): Message!
   }
   type Mutation {
     register(registerInput: RegisterInput): User!
@@ -95,19 +111,25 @@ const typeDefs = gql `
     editUser(editInput: UserEditInput): User!
     deleteUser(userId: ID!): String!
 
-    createPost(body: String!, type: String!, destination: String): Post!
-    deletePost(postId: ID!): String!
-    likePost(postId: ID!): Post!
-
-    createComment(postId: String!, body: String!): Post!
-    deleteComment(postId: ID!, commentId: ID!): Post!
+    # createPost(body: String!, type: String!, destination: String): Post!
+    # deletePost(postId: ID!): String!
+    # likePost(postId: ID!): Post!
+    # createComment(postId: String!, body: String!): Post!
+    # deleteComment(postId: ID!, commentId: ID!): Post!
     
+    createMessage(body: String!, type: String!, destination: String): Message! "TODO change params"
+    deleteMessage(messageId: ID!): String!
+    likeMessage(messageId: ID!): Message!
+    createComment(messageId: String!, body: String!): Message!
+    deleteComment(messageId: ID!, commentId: ID!): Message!
+
     createKey(userId: ID!, username: String!, type: String!, title: String, address: AddressInput): Key!
     deleteKey(userId: ID!, keyId: ID!): String!
     toggleActiveKey(userId: ID!, keyId: ID!): Key!
   }
   type Subscription{
-    newPost: Post!
+    # newPost: Post!
+    newMessage: Message!
   }
 `
 

@@ -1,10 +1,10 @@
 const { UserInputError, AuthenticationError } = require('apollo-server')
 const checkAuth = require('../../util/check-auth')
-const Post = require('./../../models/Post')
+const Message = require('./../../models/Message')
 
 module.exports = {
   Mutation: {
-    createComment: async (_, { postId, body }, context) => {
+    createComment: async (_, { messageId, body }, context) => {
       const { username } = checkAuth(context)
       if (body.trim() === ''){
         throw UserInputError('Empty comment', {
@@ -13,34 +13,34 @@ module.exports = {
           }
         })
       }
-      const post = await Post.findById(postId)
-      if(post) {
-        post.comments.unshift({
+      const message = await Message.findById(messageId)
+      if(message) {
+        message.comments.unshift({
           body,
           username,
           createdAt: new Date().toISOString()
         })
-        await post.save()
-        return post
+        await message.save()
+        return message
       } else {
-        throw new UserInputError('Post not found')
+        throw new UserInputError('Message not found')
       }
     },
 
-    deleteComment: async(_, { postId, commentId }, context) => {
+    deleteComment: async(_, { messageId, commentId }, context) => {
       const { username } = checkAuth(context);
-      const post = await Post.findById(postId)
-      if(post) {
-        const commentIndex = post.comments.findIndex(c => c.id === commentId)
-        if (post.comments[commentIndex].username === username) {
-          post.comments.splice(commentIndex, 1)
-          await post.save()
-          return post
+      const message = await Message.findById(messageId)
+      if(message) {
+        const commentIndex = message.comments.findIndex(c => c.id === commentId)
+        if (message.comments[commentIndex].username === username) {
+          message.comments.splice(commentIndex, 1)
+          await message.save()
+          return message
         } else {
           throw new AuthenticationError('Action not allowed')
         }
       } else {
-        throw new UserInputError('Post not found')
+        throw new UserInputError('Message not found')
       }
     }
   }
