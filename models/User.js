@@ -8,5 +8,9 @@ const userSchema = new mongoose.Schema({
   name: String
 })
 
+userSchema.virtual('id').get(function () {
+  return this._id.toString();
+});
+
 const user = mongoose.model('User', userSchema)
 module.exports = user;

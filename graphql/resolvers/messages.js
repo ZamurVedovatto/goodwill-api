@@ -29,23 +29,34 @@ module.exports = {
   },
 
   Mutation: {
-    async createMessage(_, { body, type, destination }, context) { // TODO change params to msg params
+    async createMessage(_, { modality, targetKey, body }, context) {
+
+      console.log(modality, targetKey, body)
+
       const user = checkAuth(context)
       if (body.trim() === '') { // change it to validators file
         throw new Error('Message body must not be empty')
       }
+
+      // console.log(user)
+
       const newMessage = new Message({
+        modality,
+        targetKey,
         body,
-        type,
-        destination,
-        user: user.id,
-        username: user.username,
+        senderId: user.id,
         createdAt: new Date().toISOString()
       })
+
+      console.log(newMessage)
+
       const message = await newMessage.save()
-      context.pubsub.publish('NEW_MESSAGE', {
-        newMessage: message
-      })
+
+      console.log(message)
+
+      // context.pubsub.publish('NEW_MESSAGE', {
+      //   newMessage: message
+      // })
       return message
     },
 

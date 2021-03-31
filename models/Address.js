@@ -16,5 +16,9 @@ const addressSchema = new Schema({
   }
 })
 
+addressSchema.virtual('id').get(function () {
+  return this._id.toString();
+});
+
 const addressModel = model('Address', addressSchema, 'Address')
 module.exports = { addressModel }

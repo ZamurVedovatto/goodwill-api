@@ -32,5 +32,9 @@ const keySchema = new mongoose.Schema({
   }
 })
 
+keySchema.virtual('id').get(function () {
+  return this._id.toString();
+});
+
 const KeyModel = mongoose.model('Key', keySchema)
 module.exports = KeyModel

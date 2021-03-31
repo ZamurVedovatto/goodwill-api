@@ -71,10 +71,9 @@ const typeDefs = gql `
   type Message {
     id: ID!
     modality: String,
-    senderKey: Key!,
-    targetKey: Key!,
+    targetKey: String!,
     body: String!,
-    sender: User!,
+    senderId: ID!,
     createdAt: String!
     comments: [Comment]!
     commentCount: Int!
@@ -117,7 +116,7 @@ const typeDefs = gql `
     # createComment(postId: String!, body: String!): Post!
     # deleteComment(postId: ID!, commentId: ID!): Post!
     
-    createMessage(body: String!, type: String!, destination: String): Message! "TODO change params"
+    createMessage(modality: String!, targetKey: ID!, body: String!): Message!
     deleteMessage(messageId: ID!): String!
     likeMessage(messageId: ID!): Message!
     createComment(messageId: String!, body: String!): Message!

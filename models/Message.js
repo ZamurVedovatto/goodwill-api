@@ -1,20 +1,20 @@
 const mongoose = require('mongoose')
 
+const modalities = [
+  "single",
+  "multiple"
+]
+
 const messageSchema = new mongoose.Schema({
-  modality: String,
-  targetKey: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Keys'
+  modality: {
+    required: true,
+    type: String,
+    enum: modalities,
+    default: 'single'
   },
+  targetKey: String,
   body: String,
-  senderKey: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Keys'
-  },
-  sender: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Users'
-  },
+  senderId: String,
   createdAt: String,
   comments: [
     {
@@ -30,6 +30,10 @@ const messageSchema = new mongoose.Schema({
     }
   ]
 })
+
+messageSchema.virtual('id').get(function () {
+  return this._id.toString();
+});
 
 const message = mongoose.model('Message', messageSchema)
 module.exports = message;
