@@ -74,6 +74,7 @@ const typeDefs = gql `
     targetKey: String!,
     body: String!,
     senderId: ID!,
+    senderKey: String!,
     createdAt: String!
     comments: [Comment]!
     commentCount: Int!
@@ -117,7 +118,7 @@ const typeDefs = gql `
     # createComment(postId: String!, body: String!): Post!
     # deleteComment(postId: ID!, commentId: ID!): Post!
     
-    createMessage(modality: String!, targetKey: String!, body: String!): Message!
+    createMessage(modality: String!, targetKey: String!, body: String!, senderKey: String!): Message!
     deleteMessage(messageId: ID!): String!
     likeMessage(messageId: ID!): Message!
     createComment(messageId: String!, body: String!): Message!

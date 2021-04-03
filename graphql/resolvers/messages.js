@@ -29,12 +29,8 @@ module.exports = {
     },
 
     async getUserMessages(_, { userId }, context) {
-      
       const authenticatedUser = checkAuth(context)
-      console.log(authenticatedUser)
-      
       try{
-
         if(authenticatedUser.id == userId) {
           const keys = await KeyModel.find({"userId": userId}).sort({ createdAt: -1 })
           const keysTitle = keys.map(key => key.title)
@@ -55,7 +51,8 @@ module.exports = {
   },
 
   Mutation: {
-    async createMessage(_, { modality, targetKey, body }, context) {
+    async createMessage(_, { modality, targetKey, body, senderKey }, context) {
+      console.log(modality, targetKey, body, senderKey)
       const user = checkAuth(context)
       if (body.trim() === '') { // change it to validators file
         throw new Error('Message body must not be empty')
@@ -64,6 +61,7 @@ module.exports = {
         modality,
         targetKey,
         body,
+        senderKey,
         senderId: user.id,
         createdAt: new Date().toISOString()
       })

@@ -15,6 +15,7 @@ const messageSchema = new mongoose.Schema({
   targetKey: String,
   body: String,
   senderId: String,
+  senderKey: String,
   createdAt: String,
   comments: [
     {
