@@ -16,6 +16,14 @@ const messageSchema = new mongoose.Schema({
   body: String,
   senderId: String,
   senderKey: String,
+  read: {
+    type: Boolean,
+    default: false
+  },
+  received: {
+    type: Boolean,
+    default: false
+  },
   createdAt: String,
   comments: [
     {

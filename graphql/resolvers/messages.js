@@ -36,6 +36,10 @@ module.exports = {
           const keysTitle = keys.map(key => key.title)
           const messages = await Message.find({ "targetKey": { $in: keysTitle} }).sort({ createdAt: -1 })
           if(messages) {
+            messages.forEach(async (msg) => {
+              msg.received = true
+              await msg.save()
+            })
             return messages
           } else {
             throw new Error('Messages not found')
@@ -106,7 +110,20 @@ module.exports = {
       } else {
         throw new UserInputError('Message not found')
       }
+    },
+
+
+    async readMessage(_, { messageId }, context) {
+      const message = await Message.findById(messageId)
+      if(message) {
+        message.read = true;
+        await message.save()
+        return message
+      } else {
+        throw new UserInputError('Message not found')
+      }
     }
+
   },
   Subscription: {
     newMessage: {
