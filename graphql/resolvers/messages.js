@@ -1,6 +1,7 @@
 const { AuthenticationError, UserInputError } = require('apollo-server')
 
 const Message = require('./../../models/Message')
+const KeyModel = require('./../../models/Key')
 const checkAuth = require('./../../util/check-auth')
 
 module.exports = {
@@ -26,20 +27,39 @@ module.exports = {
         throw new Error(err)
       }
     },
+
+    async getUserMessages(_, { userId }, context) {
+      
+      const authenticatedUser = checkAuth(context)
+      console.log(authenticatedUser)
+      
+      try{
+
+        if(authenticatedUser.id == userId) {
+          const keys = await KeyModel.find({"userId": userId}).sort({ createdAt: -1 })
+          const keysTitle = keys.map(key => key.title)
+          const messages = await Message.find({ "targetKey": { $in: keysTitle} }).sort({ createdAt: -1 })
+          if(messages) {
+            return messages
+          } else {
+            throw new Error('Messages not found')
+          }
+        } else {
+          throw new AuthenticationError('Action not allowed')
+        }
+
+      } catch(err) {
+        throw new Error(err)
+      }
+    },
   },
 
   Mutation: {
     async createMessage(_, { modality, targetKey, body }, context) {
-
-      console.log(modality, targetKey, body)
-
       const user = checkAuth(context)
       if (body.trim() === '') { // change it to validators file
         throw new Error('Message body must not be empty')
       }
-
-      // console.log(user)
-
       const newMessage = new Message({
         modality,
         targetKey,
@@ -47,19 +67,12 @@ module.exports = {
         senderId: user.id,
         createdAt: new Date().toISOString()
       })
-
-      console.log(newMessage)
-
       const message = await newMessage.save()
-
-      console.log(message)
-
       // context.pubsub.publish('NEW_MESSAGE', {
       //   newMessage: message
       // })
       return message
     },
-
 
     async deleteMessage(_, { messageId }, context) {
       const user = checkAuth(context)

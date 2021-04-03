@@ -1,7 +1,7 @@
 const { AuthenticationError, UserInputError } = require('apollo-server')
 const { validateKeyInput } = require('./../../util/validators')
 const checkAuth = require('./../../util/check-auth')
-const KeyModel = require('./../../models/Keys')
+const KeyModel = require('./../../models/Key')
 
 module.exports = {
   Query: {

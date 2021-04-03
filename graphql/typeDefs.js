@@ -103,6 +103,7 @@ const typeDefs = gql `
 
     getMessages: [Message!]
     getMessage(messageId: ID!): Message!
+    getUserMessages(userId: ID!): [Message!]
   }
   type Mutation {
     register(registerInput: RegisterInput): User!
