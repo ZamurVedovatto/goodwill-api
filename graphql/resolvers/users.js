@@ -42,6 +42,23 @@ module.exports = {
         throw new Error(err)
       }
     },
+
+    // QUERY GET USER
+    async getUserFavoritedKeys(_, { userId }) {
+      try{
+        const user = await User.findById(userId)
+        if(user) {
+          console.log(user.favoritedKeys)
+          const keys = await KeyModel.find({ "_id": { $in: user.favoritedKeys} }).sort({ createdAt: -1 })
+          console.log(keys)
+          return keys
+        } else {
+          throw new Error('User not found')
+        }
+      } catch(err) {
+        throw new Error(err)
+      }
+    },
   },
 
 
@@ -167,6 +184,31 @@ module.exports = {
         }
       } catch(err) {
         throw new Error(err)
+      }
+    },
+
+    // FAVORITED KEYS
+    async favoriteKey(_, { userId, keyId }, context) {
+      const key = await KeyModel.findById(keyId)
+      const user = await User.findById(userId)
+
+      if(keyId) {
+        let index = user.favoritedKeys.indexOf(keyId);
+        console.log("index 186", index)
+        if (index > -1) {
+          console.log("estava nos favoritos")
+          user.favoritedKeys.splice(index, 1);
+        } else {
+          console.log("não estava nos favoritos")
+          user.favoritedKeys.push(keyId)
+        }
+        await user.save()
+
+        console.log(user.favoritedKeys)
+
+        return key
+      } else {
+        throw new UserInputError('Key not found')
       }
     },
   }

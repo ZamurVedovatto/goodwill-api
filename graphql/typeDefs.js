@@ -35,10 +35,11 @@ const typeDefs = gql `
   }
   type User {
     id: ID!
-    email: String
-    token: String
-    username: String
     name: String
+    username: String
+    email: String
+    favoritedKeys: [Key!]
+    token: String
     createdAt: String
   }
   type Key{
@@ -101,6 +102,7 @@ const typeDefs = gql `
     # getPosts: [Post!]
     # getPost(postId: ID!): Post!
     getUserKeys(userId: String!): [Key!]
+    getUserFavoritedKeys(userId: ID!): [Key!]
     getKeys: [Key!]
     getKey(keyId: ID!): Key!
 
@@ -114,6 +116,7 @@ const typeDefs = gql `
     login(username: String!, password: String!): LoggedUser!
     editUser(editInput: UserEditInput): User!
     deleteUser(userId: ID!): String!
+    favoriteKey(userId: ID!, keyId: ID!): Key!
 
     # createPost(body: String!, type: String!, destination: String): Post!
     # deletePost(postId: ID!): String!
