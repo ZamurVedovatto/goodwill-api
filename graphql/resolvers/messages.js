@@ -28,7 +28,7 @@ module.exports = {
       }
     },
 
-    async getUserMessages(_, { userId }, context) {
+    async getUserReceivedMessages(_, { userId }, context) {
       const authenticatedUser = checkAuth(context)
       try{
         if(authenticatedUser.id == userId) {
@@ -52,7 +52,27 @@ module.exports = {
         throw new Error(err)
       }
     },
+
+    async getUserSentMessages(_, { userId }, context) {
+      const authenticatedUser = checkAuth(context)
+      console.log(authenticatedUser.id == userId)
+      try{
+        if(authenticatedUser.id == userId) {
+          const messages = await Message.find({ "senderId": userId }).sort({ createdAt: -1 })
+          if(messages) {
+            return messages
+          } else {
+            throw new Error('Messages not found')
+          }
+        } else {
+          throw new AuthenticationError('Action not allowed')
+        }
+      } catch(err) {
+        throw new Error(err)
+      }
+    },
   },
+
 
   Mutation: {
     async createMessage(_, { modality, targetKey, body, senderKey }, context) {
