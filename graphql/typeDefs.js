@@ -101,7 +101,7 @@ const typeDefs = gql `
     getUser(userId: ID!): User!
     # getPosts: [Post!]
     # getPost(postId: ID!): Post!
-    getUserKeys(userId: String!): [Key!]
+    getUserKeys(userId: ID!): [Key!]
     getUserFavoritedKeys(userId: ID!): [Key!]
     getKeys: [Key!]
     getKey(keyId: ID!): Key!
