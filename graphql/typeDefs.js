@@ -15,23 +15,17 @@ const typeDefs = gql `
     name: String
     createdAt: String
   }
-  input AddressInput {
-    code: String!
-    number: String!
-    street: String
-    complement: String
-    district: String
-    city: String
-    country: String
-  }
   type Address {
+    id: ID!
     code: String
-    number: String
+    type: String
     street: String
+    number: String
     complement: String
-    district: String
+    neighborhood: String
     city: String
     country: String
+    userId: ID!
   }
   type User {
     id: ID!
@@ -51,24 +45,12 @@ const typeDefs = gql `
     userId: ID!
     username: String
     title: String!
-    address: Address
+    address: ID!
   }
   type LoggedUser {
     user: User!
     keys: [Key]
   }
-  # type Post {
-  #   id: ID!
-  #   body: String!
-  #   type: String!
-  #   destination: String,
-  #   createdAt: String!
-  #   comments: [Comment]!
-  #   username: String!
-  #   likes: [Like]!
-  #   likeCount: Int!
-  #   commentCount: Int!
-  # }
   type Message {
     id: ID!
     modality: String,
@@ -99,12 +81,15 @@ const typeDefs = gql `
   type Query {
     getUsers: [User!]
     getUser(userId: ID!): User!
-    # getPosts: [Post!]
-    # getPost(postId: ID!): Post!
     getUserKeys(userId: ID!): [Key!]
     getUserFavoritedKeys(userId: ID!): [Key!]
+
     getKeys: [Key!]
     getKey(keyId: ID!): Key!
+
+    getAddresses: [Address!]!
+    getUserAddresses(userId: ID!): [Address!]!
+    getAddress(id: ID!): Address!
 
     getMessages: [Message!]
     getMessage(messageId: ID!): Message!
@@ -117,12 +102,6 @@ const typeDefs = gql `
     editUser(editInput: UserEditInput): User!
     deleteUser(userId: ID!): String!
     favoriteKey(userId: ID!, keyId: ID!): Key!
-
-    # createPost(body: String!, type: String!, destination: String): Post!
-    # deletePost(postId: ID!): String!
-    # likePost(postId: ID!): Post!
-    # createComment(postId: String!, body: String!): Post!
-    # deleteComment(postId: ID!, commentId: ID!): Post!
     
     createMessage(modality: String!, targetKey: String!, body: String!, senderKey: String!): Message!
     deleteMessage(messageId: ID!): String!
@@ -131,9 +110,14 @@ const typeDefs = gql `
     createComment(messageId: String!, body: String!): Message!
     deleteComment(messageId: ID!, commentId: ID!): Message!
 
-    createKey(userId: ID!, username: String!, type: String!, title: String, address: AddressInput): Key!
+    createKey(userId: ID!, username: String!, type: String!, title: String, address: ID!): Key!
     deleteKey(userId: ID!, keyId: ID!): String!
     toggleActiveKey(userId: ID!, keyId: ID!): Key!
+
+    createAddress(
+      userId: ID!, code: String!, type: String!, street: String, number: String, complement: String, neighborhood: String, city: String, country: String
+      ): Address!
+    deleteAddress(userId: ID!, addressId: ID!): String!
   }
   type Subscription{
     # newPost: Post!

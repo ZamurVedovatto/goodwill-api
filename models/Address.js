@@ -1,11 +1,26 @@
 const { Schema, model } = require('mongoose')
 
+const types = [
+  "house",
+  "apartment",
+  "commercial"
+]
+
 const addressSchema = new Schema({
-  code: String,
+  code: {
+    required: true,
+    type: String
+  },
+  type: {
+    required: true,
+    type: String,
+    enum: types,
+    default: 'house'
+  },
   street: String,
   number: Number,
   complement: String,
-  district: String,
+  neighborhood: String,
   city: {
     type: String,
     default: 'Belo Horizonte'
@@ -13,12 +28,13 @@ const addressSchema = new Schema({
   country: {
     type: String,
     default: 'Brasil'
-  }
+  },
+  userId: String,
 })
 
 addressSchema.virtual('id').get(function () {
   return this._id.toString();
 });
 
-const addressModel = model('Address', addressSchema, 'Address')
-module.exports = { addressModel }
+const address = model('Address', addressSchema)
+module.exports = address;

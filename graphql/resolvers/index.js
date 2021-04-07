@@ -1,29 +1,28 @@
-// const postsResolvers = require('./posts')
-const usersResolvers = require('./users')
+const addressResolvers = require('./address')
 const commentResolvers = require('./comments')
 const keysResolvers = require('./keys')
 const messagesResolvers = require('./messages')
+const usersResolvers = require('./users')
 
 module.exports = {
   Message: {
+    commentCount: (parent) =>  parent.comments.length,
     likeCount: (parent) => parent.likes.length,
-    commentCount: (parent) =>  parent.comments.length
   },
   Query: {
-    ...usersResolvers.Query,
-    // ...postsResolvers.Query,
+    ...addressResolvers.Query,
     ...keysResolvers.Query,
     ...messagesResolvers.Query,
+    ...usersResolvers.Query,
   },
   Mutation: {
-    ...usersResolvers.Mutation,
-    // ...postsResolvers.Mutation,
+    ...addressResolvers.Mutation,
     ...commentResolvers.Mutation,
     ...keysResolvers.Mutation,
     ...messagesResolvers.Mutation,
+    ...usersResolvers.Mutation,
   },
   Subscription: {
-    // ...postsResolvers.Subscription,
-    ...messagesResolvers.Subscription
+    ...messagesResolvers.Subscription,
   }
 }
