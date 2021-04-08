@@ -2,6 +2,7 @@ const { AuthenticationError, UserInputError } = require('apollo-server')
 const { validateKeyInput } = require('./../../util/validators')
 const checkAuth = require('./../../util/check-auth')
 const KeyModel = require('./../../models/Key')
+const AddressModel = require('./../../models/Address')
 
 module.exports = {
   Query: {
@@ -38,12 +39,12 @@ module.exports = {
       username,
       type,
       title,
-      address,
+      addressInput
     }, context) {
       const authenticatedUser = checkAuth(context)
       try {
         if(authenticatedUser.id == userId) {
-          const { valid, errors } = validateKeyInput(type, title, address)
+          const { valid, errors } = validateKeyInput(type, title)
           if(!valid) {
             throw new UserInputError('Errors', { errors })
           }
@@ -56,15 +57,21 @@ module.exports = {
               }
             })
           }
-          const newKey = new KeyModel({
-            type,
-            userId,
-            username,
-            title,
-            address,
-            createdAt: new Date().toISOString()
-          })
-          return await newKey.save()
+
+          if(type === 'address') {
+            const newAddress = new AddressModel(addressInput)
+            console.log(newAddress)
+          }
+
+          // const newKey = new KeyModel({
+          //   type,
+          //   userId,
+          //   username,
+          //   title,
+          //   address,
+          //   createdAt: new Date().toISOString()
+          // })
+          // return await newKey.save()
         } else {
           throw new AuthenticationError('Action not allowed')
         }

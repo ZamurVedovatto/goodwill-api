@@ -15,6 +15,17 @@ const typeDefs = gql `
     name: String
     createdAt: String
   }
+  input AddressInput {
+    userId: ID!
+    code: String!
+    type: String
+    street: String
+    number: String
+    complement: String
+    neighborhood: String
+    city: String
+    country: String
+  }
   type Address {
     id: ID!
     code: String
@@ -45,7 +56,7 @@ const typeDefs = gql `
     userId: ID!
     username: String
     title: String!
-    address: ID!
+    address: ID
   }
   type LoggedUser {
     user: User!
@@ -110,13 +121,11 @@ const typeDefs = gql `
     createComment(messageId: String!, body: String!): Message!
     deleteComment(messageId: ID!, commentId: ID!): Message!
 
-    createKey(userId: ID!, username: String!, type: String!, title: String, address: ID!): Key!
+    createKey(userId: ID!, username: String!, type: String!, title: String, addressInput: AddressInput): Key!
     deleteKey(userId: ID!, keyId: ID!): String!
     toggleActiveKey(userId: ID!, keyId: ID!): Key!
 
-    createAddress(
-      userId: ID!, code: String!, type: String!, street: String, number: String, complement: String, neighborhood: String, city: String, country: String
-      ): Address!
+    createAddress(addressInput: AddressInput!): Address!
     deleteAddress(userId: ID!, addressId: ID!): String!
   }
   type Subscription{

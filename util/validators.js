@@ -45,7 +45,7 @@ module.exports.validateLoginInput = (username, password) => {
   }
 }
 
-module.exports.validateKeyInput = (type, title, address) => {
+module.exports.validateKeyInput = (type, title) => {
   const errors = {}
   if(type.trim() === '') {
     errors.type = 'Type must not be empty'
@@ -53,9 +53,6 @@ module.exports.validateKeyInput = (type, title, address) => {
   if (type === 'plate' && title.trim() === '') {
     errors.type = 'Plate must not be empty'
   } 
-  if (type === 'address' && address.trim() === '') {
-    errors.type = 'Address must not be empty'
-  }
   return {
     errors,
     valid: Object.keys(errors).length < 1
