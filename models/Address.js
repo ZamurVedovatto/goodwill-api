@@ -29,6 +29,10 @@ const addressSchema = new Schema({
     type: String,
     default: 'Brasil'
   },
+  asKey: {
+    type: Boolean,
+    default: false
+  },
   userId: String,
 })
 

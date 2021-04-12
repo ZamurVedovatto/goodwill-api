@@ -37,6 +37,7 @@ const typeDefs = gql `
     city: String
     country: String
     userId: ID!
+    asKey: Boolean!
   }
   type User {
     id: ID!
@@ -101,7 +102,7 @@ const typeDefs = gql `
     getAddresses: [Address!]!
     getUserAddresses(userId: ID!): [Address!]!
     getAddress(id: ID!): Address!
-
+    
     getMessages: [Message!]
     getMessage(messageId: ID!): Message!
     getUserReceivedMessages(userId: ID!): [Message!]
@@ -127,6 +128,7 @@ const typeDefs = gql `
 
     createAddress(addressInput: AddressInput!): Address!
     deleteAddress(userId: ID!, addressId: ID!): String!
+    setAddressAsKey(addressId: ID!): Address!
   }
   type Subscription{
     # newPost: Post!

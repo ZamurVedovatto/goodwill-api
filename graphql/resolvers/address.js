@@ -2,6 +2,7 @@ const { AuthenticationError, UserInputError } = require('apollo-server')
 const { validateKeyInput } = require('./../../util/validators')
 const checkAuth = require('./../../util/check-auth')
 const AddressModel = require('./../../models/Address')
+const cepPromise = require('cep-promise')
 
 module.exports = {
   Query: {
@@ -33,7 +34,7 @@ module.exports = {
   },
 
   Mutation: {
-    async createAddress(_, {
+    async createAddress(_, { addressInput: {
         userId,
         code,
         type,
@@ -43,30 +44,41 @@ module.exports = {
         neighborhood,
         city,
         country,
-      }, context) {
-      const authenticatedUser = checkAuth(context)
+      }}, context) {
+      // const authenticatedUser = checkAuth(context)
       try {
-        if(authenticatedUser.id == userId) {
-          // TODO validate inputs
-          // TODO make sure user doesn't already exists
+        // TODO check authenticated user
+        // TODO validate inputs
+        // TODO make sure user doesn't already exists
 
-          const newAddress = new AddressModel({
-            userId,
-            code,
-            type,
-            street,
-            number,
-            complement,
-            neighborhood,
-            city,
-            country,
-            createdAt: new Date().toISOString()
-          })
-          const data = await newAddress.save()
-          return data
-        } else {
-          throw new AuthenticationError('Action not allowed')
-        }
+        console.log(userId,
+          code,
+          type,
+          street,
+          number,
+          complement,
+          neighborhood,
+          city,
+          country)
+
+        const newAddress = new AddressModel({
+          userId,
+          code,
+          type,
+          street,
+          number,
+          complement,
+          neighborhood,
+          city,
+          country,
+          createdAt: new Date().toISOString()
+        })
+
+        console.log(newAddress)
+
+        const data = await newAddress.save()
+        return data
+
       } catch(err) {
         throw new Error(err)
       }
@@ -88,6 +100,20 @@ module.exports = {
         }
       } catch(err) {
         throw new Error(err)
+      }
+    },
+
+
+    async setAddressAsKey(_, { addressId }, context) {
+      console.log("addressId", addressId)
+      const addressSelected = await AddressModel.findById(addressId)
+      if(addressSelected) {
+        addressSelected.asKey = !addressSelected.asKey
+        console.log("addressSelected.asKey" , addressSelected.asKey)
+        await addressSelected.save()
+        return addressSelected
+      } else {
+        throw new UserInputError('Address not found')
       }
     }
   }
